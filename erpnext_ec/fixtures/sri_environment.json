@@ -12,7 +12,8 @@
     "name": "PRO",
     "id": 2,
     "description": "Produccion",
-    "service_url_recept": "https://cel.sri.gob.ec/comprobantes-electronicos-ws/RecepcionComprobantesOffline?wsdl",
-    "service_url_authorize": "https://cel.sri.gob.ec/comprobantes-electronicos-ws/AutorizacionComprobantesOffline?wsdl"
+    "service_url_recept": "https://celcer.sri.gob.ec/comprobantes-electronicos-ws/RecepcionComprobantesOffline?wsdl",
+    "service_url_authorize": "https://celcer.sri.gob.ec/comprobantes-electronicos-ws/AutorizacionComprobantesOffline?wsdl"
+    
   }
 ]
