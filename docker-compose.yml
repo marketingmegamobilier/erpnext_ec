@@ -1,0 +1,83 @@
+version: "3.8"
+
+services:
+  mariadb:
+    image: mariadb:10.6
+    container_name: erpnext_mariadb
+    restart: unless-stopped
+    command:
+      - --character-set-server=utf8mb4
+      - --collation-server=utf8mb4_unicode_ci
+      - --skip-character-set-client-handshake
+      - --skip-innodb-read-only-compressed
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_USER: frappe
+      MYSQL_PASSWORD: frappe
+      MYSQL_DATABASE: frappe
+    volumes:
+      - mariadb_data:/var/lib/mysql
+    ports:
+      - "3306:3306"
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-uroot", "-proot"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  redis-cache:
+    image: redis:7-alpine
+    container_name: erpnext_redis_cache
+    restart: unless-stopped
+    volumes:
+      - redis_cache_data:/data
+
+  redis-queue:
+    image: redis:7-alpine
+    container_name: erpnext_redis_queue
+    restart: unless-stopped
+    volumes:
+      - redis_queue_data:/data
+
+  redis-socketio:
+    image: redis:7-alpine
+    container_name: erpnext_redis_socketio
+    restart: unless-stopped
+    volumes:
+      - redis_socketio_data:/data
+
+  frappe:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: erpnext_frappe
+    restart: unless-stopped
+    stdin_open: true
+    tty: true
+    environment:
+      - SHELL=/bin/bash
+      - FRAPPE_USER=frappe
+    volumes:
+      - frappe_bench:/home/frappe/frappe-bench
+      - ./:/home/frappe/frappe-bench/apps/erpnext_ec:cached
+    ports:
+      - "8000:8000"
+      - "9000:9000"
+      - "6787:6787"
+    depends_on:
+      mariadb:
+        condition: service_healthy
+      redis-cache:
+        condition: service_started
+      redis-queue:
+        condition: service_started
+      redis-socketio:
+        condition: service_started
+    command: ["bash", "-c", "cd /home/frappe/frappe-bench && bench start"]
+
+volumes:
+  mariadb_data:
+  redis_cache_data:
+  redis_queue_data:
+  redis_socketio_data:
+  frappe_bench:
