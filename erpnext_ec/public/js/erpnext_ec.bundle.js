@@ -1,6 +1,9 @@
 // erpnext_ec.bundle.js - Bundle principal para ERPNext v15+
 // Este archivo importa todos los módulos necesarios para la aplicación
 
+// Estilos CSS (esbuild los procesará y generará el bundle CSS)
+import "../css/erpnext_ec.bundle.css";
+
 // Módulos principales SRI
 import "./sri_custom.js";
 import "./sales_invoice_tools.js";
