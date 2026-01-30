@@ -137,46 +137,78 @@ function evalSriSettings()
   }
 }
 
-setTimeout(
-    async function () {
-        /*
-        var buttonGroup = `<div class="dropdown show" style="display: inline-block;">
-  <a class="btn btn-secondary dropdown-toggle btn-xs" href="#" role="button" id="dropdownMenuTopNavBar" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-  ${frappe.boot.sysdefaults.company }
-  </a>
-  <div class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownMenuTopNavBar">
-    <a class="dropdown-item" href="javascript:document.Website.DownloadXml(''); "><i class="fa fa-file-code-o" aria-hidden="true"></i> Xml </a>
-    <a class="dropdown-item" href="javascript:document.Website.DownloadPdf(''); "><i class="fa fa-file-pdf-o" aria-hidden="true"></i> Pdf </a>
-    <a class="dropdown-item" href="javascript:document.Website.ShowInfo(''); "><i class="fa fa-info-circle" aria-hidden="true"></i> Ver información</a>
-  </div>
-</div>
-`;
-*/
-/*
-      var buttonGroup = `<div class="dropdown show" style="display: inline-block;">
-        <a class="btn-secondary dropdown-toggle btn-xs" href="#" role="button" id="dropdownMenuTopNavBar" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-        <div class="" style="max-width: 100px;display: inline-block;text-overflow: ellipsis;overflow-x: hidden;overflow-y: hidden;">
-        ${frappe.boot.sysdefaults.company}
-        </div>
-        </a>  
-      </div>
-      `;
-*/
+// Función para obtener el selector de navbar compatible con diferentes versiones de Frappe
+function getNavbarSelector() {
+    // Selector v15 (navbar rediseñada)
+    let v15Selectors = [
+        '.navbar-right .dropdown',
+        '.navbar-nav.navbar-right-icons > li:first-child',
+        '.standard-actions .dropdown'
+    ];
 
-//$('.form-inline.fill-width.justify-content-end').after(buttonGroup);
+    // Selector v14 y anteriores
+    let legacySelector = 'li.nav-item.dropdown.dropdown-notifications';
 
-      var buttonGroup = `<li class="nav-item dropdown dropdown-mobile show">
-        <button class="btn-reset nav-link text-muted ellipsis" 
-        data-toggle="" aria-haspopup="true" 
-        aria-expanded="true" title="" 
+    // Intentar selectores v15 primero
+    for (let selector of v15Selectors) {
+        if ($(selector).length > 0) {
+            return { element: $(selector).first(), position: 'before' };
+        }
+    }
+
+    // Fallback a versión anterior
+    if ($(legacySelector).length > 0) {
+        return { element: $(legacySelector), position: 'before' };
+    }
+
+    // Selector alternativo genérico
+    let altSelector = '.navbar .navbar-collapse .navbar-nav';
+    if ($(altSelector).length > 0) {
+        return { element: $(altSelector).last(), position: 'append' };
+    }
+
+    return null;
+}
+
+// Función para insertar el botón de compañía en la navbar
+function insertCompanyButton() {
+    // Evitar duplicados
+    if ($('.erpnext-ec-company-btn').length > 0) {
+        return;
+    }
+
+    var companyName = frappe.boot.sysdefaults.company || 'Sin Empresa';
+
+    var buttonGroup = `<li class="nav-item dropdown dropdown-mobile show erpnext-ec-company-btn">
+        <button class="btn-reset nav-link text-muted ellipsis"
+        data-toggle="" aria-haspopup="true"
+        aria-expanded="true" title=""
         data-original-title="Compania" style="max-width: 120px;"
         onclick="showEvalSriSettings(false)">
-        <span class="ellipsis">${frappe.boot.sysdefaults.company}</span>
+        <span class="ellipsis">${companyName}</span>
         </button>
         </li>`;
 
-      $('li.nav-item.dropdown.dropdown-notifications').before(buttonGroup);        
-      
+    let navTarget = getNavbarSelector();
+
+    if (navTarget) {
+        if (navTarget.position === 'before') {
+            navTarget.element.before(buttonGroup);
+        } else if (navTarget.position === 'append') {
+            navTarget.element.append(buttonGroup);
+        }
+    } else {
+        console.warn('erpnext_ec: No se pudo encontrar selector de navbar compatible');
+    }
+}
+
+setTimeout(
+    async function () {
+      insertCompanyButton();
       evalSriSettings();
-      
 }, 2000);
+
+// Escuchar evento page-change para SPAs (v15 usa más navegación SPA)
+$(document).on('page-change', function() {
+    setTimeout(insertCompanyButton, 500);
+});

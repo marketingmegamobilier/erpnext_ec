@@ -1,0 +1,27 @@
+/* erpnext_ec.bundle.css - Estilos consolidados para ERPNext v15+ */
+
+/* Importar estilos de librerías externas */
+@import "../js/libs/jsonTree/jsonTree.css";
+@import "../js/libs/monthpicker/qunit.min.css";
+@import "../js/libs/monthpicker/jquery-ui.css";
+
+/* Estilos adicionales para SRI */
+.warning-sri {
+    padding: 10px;
+    background-color: #fff3cd;
+    border: 1px solid #ffc107;
+    border-radius: 4px;
+    margin-top: 10px;
+}
+
+.sri-status-authorized {
+    color: #28a745;
+}
+
+.sri-status-pending {
+    color: #ffc107;
+}
+
+.sri-status-rejected {
+    color: #dc3545;
+}

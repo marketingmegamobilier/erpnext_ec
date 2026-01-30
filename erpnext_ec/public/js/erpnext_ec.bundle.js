@@ -1,40 +1,19 @@
-// import "./conf";
-// import "./utils";
-// import "./queries";
-// import "./sms_manager";
-// import "./utils/party";
-// import "./controllers/stock_controller";
-// import "./payment/payments";
-// import "./controllers/taxes_and_totals";
+// erpnext_ec.bundle.js - Bundle principal para ERPNext v15+
+// Este archivo importa todos los módulos necesarios para la aplicación
 
-//import "./controllers/transaction";
+// Módulos principales SRI
+import "./sri_custom.js";
+import "./sales_invoice_tools.js";
+import "./delivery_note_tools.js";
+import "./withholding_tools.js";
+import "./frappe_sri_ui_tools.js";
+import "./purchase_receipt_tools.js";
 
-// import "./templates/item_selector.html";
-// import "./utils/item_selector";
-// import "./help_links";
-// import "./templates/item_quick_entry.html";
-// import "./utils/contact_address_quick_entry";
-// import "./utils/customer_quick_entry";
-// import "./utils/supplier_quick_entry";
-// import "./call_popup/call_popup";
-// import "./utils/dimension_tree_filter";
-// import "./utils/ledger_preview.js";
-// import "./utils/unreconcile.js";
-// import "./utils/barcode_scanner";
-// import "./telephony";
-// import "./templates/call_link.html";
-// import "./bulk_transaction_processing";
-// import "./utils/crm_activities";
-// import "./templates/crm_activities.html";
-// import "./templates/crm_notes.html";
-// import "./controllers/accounts.js"
-// import "./utils/landed_taxes_and_charges_common.js";
-// import "./utils/sales_common.js";
-// import "./controllers/buying.js";
-// import "./utils/demo.js";
-// import "./financial_statements.js";
+// Librerías externas
+import "./libs/jsonTree/jsonTree.js";
+import "./libs/monthpicker/jquery.ui.monthpicker.min.js";
 
-// import { sum } from 'frappe/public/utils/util.js'
+// Utilidades de escritorio
+import "./utils/desk.custom.js";
 
-
-//import "./utils/purchase_common.js";
+console.log('erpnext_ec v15 bundle loaded successfully');

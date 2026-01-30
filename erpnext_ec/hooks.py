@@ -10,32 +10,38 @@ required_apps = [
     'erpnext'
 ]
 
+# Detección de versión de Frappe
+frappe_version_int = int(frappe_version.split('.')[0])
+is_frappe_v15_or_above = frappe_version_int >= 15
+
 # Includes in <head>
 # ------------------
 
 # include js, css files in header of desk.html
-# app_include_css = "/assets/erpnext_ec/css/erpnext_ec.css"
-# app_include_js = "/assets/erpnext_ec/js/erpnext_ec.js"
+# Para v15+ usar sistema de bundles, para versiones anteriores usar rutas absolutas
 
-app_include_js = [
-    "/assets/erpnext_ec/js/sri_custom.js",
-    "/assets/erpnext_ec/js/sales_invoice_tools.js",
-    "/assets/erpnext_ec/js/delivery_note_tools.js",
-    "/assets/erpnext_ec/js/withholding_tools.js",
-    "/assets/erpnext_ec/js/frappe_sri_ui_tools.js",
-    "/assets/erpnext_ec/js/purchase_receipt_tools.js",
-    #"/assets/erpnext_ec/js/erpnext_ec.bundle.js",
-
-    "/assets/erpnext_ec/js/libs/jsonTree/jsonTree.js",
-    "/assets/erpnext_ec/js/libs/monthpicker/jquery.ui.monthpicker.min.js",
-    "/assets/erpnext_ec/js/utils/desk.custom.js",
-]
-
-app_include_css = [
-    "/assets/erpnext_ec/js/libs/jsonTree/jsonTree.css",
-    "/assets/erpnext_ec/js/libs/monthpicker/qunit.min.css",
-    "/assets/erpnext_ec/js/libs/monthpicker/jquery-ui.css",
-]
+if is_frappe_v15_or_above:
+    # Frappe v15+ usa sistema de bundles
+    app_include_js = ["erpnext_ec.bundle.js"]
+    app_include_css = ["erpnext_ec.bundle.css"]
+else:
+    # Frappe v14 y anteriores usan rutas absolutas
+    app_include_js = [
+        "/assets/erpnext_ec/js/sri_custom.js",
+        "/assets/erpnext_ec/js/sales_invoice_tools.js",
+        "/assets/erpnext_ec/js/delivery_note_tools.js",
+        "/assets/erpnext_ec/js/withholding_tools.js",
+        "/assets/erpnext_ec/js/frappe_sri_ui_tools.js",
+        "/assets/erpnext_ec/js/purchase_receipt_tools.js",
+        "/assets/erpnext_ec/js/libs/jsonTree/jsonTree.js",
+        "/assets/erpnext_ec/js/libs/monthpicker/jquery.ui.monthpicker.min.js",
+        "/assets/erpnext_ec/js/utils/desk.custom.js",
+    ]
+    app_include_css = [
+        "/assets/erpnext_ec/js/libs/jsonTree/jsonTree.css",
+        "/assets/erpnext_ec/js/libs/monthpicker/qunit.min.css",
+        "/assets/erpnext_ec/js/libs/monthpicker/jquery-ui.css",
+    ]
 
 # include js, css files in header of web template
 # web_include_css = "/assets/erpnext_ec/css/erpnext_ec.css"
@@ -93,11 +99,10 @@ doctype_list_js = {
 # automatically create page for each record of this doctype
 # website_generators = ["Web Page"]
 
-is_frappe_above_v14 = int(frappe_version.split('.')[0]) > 14
-is_frappe_above_v13 = int(frappe_version.split('.')[0]) > 13
-is_frappe_above_v12 = int(frappe_version.split('.')[0]) > 12
-
-frappe_version_int = int(frappe_version.split('.')[0])
+# Variables de compatibilidad (usadas en otras partes del código)
+is_frappe_above_v14 = frappe_version_int > 14
+is_frappe_above_v13 = frappe_version_int > 13
+is_frappe_above_v12 = frappe_version_int > 12
 
 #print(is_frappe_above_v13)
 #print(is_frappe_above_v12)

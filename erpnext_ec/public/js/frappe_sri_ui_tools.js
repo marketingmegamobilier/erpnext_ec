@@ -1,3 +1,39 @@
+// Detectar versión de Frappe para compatibilidad
+const ERPNEXT_EC_COMPAT = {
+    isV15: function() {
+        try {
+            return parseInt(frappe.boot.versions.frappe.split('.')[0]) >= 15;
+        } catch(e) {
+            return false;
+        }
+    },
+    // Obtener el botón de acción para un documento específico
+    getActionButton: function(docName) {
+        // Intentar selector v15 primero
+        let btn = $(`.list-row[data-name="${docName}"] .list-row-activity .btn-action`);
+
+        if (btn.length === 0) {
+            // Fallback v14 y anteriores
+            btn = $(`.list-actions > .btn-action[data-name="${docName}"]`);
+        }
+
+        if (btn.length === 0) {
+            // Fallback genérico
+            btn = $(`button.btn-action[data-name="${docName}"]`);
+        }
+
+        return btn;
+    },
+    // Obtener el contenedor de acciones de lista
+    getListActionsContainer: function() {
+        let container = $('.list-actions');
+        if (container.length === 0) {
+            container = $('.list-row-activity');
+        }
+        return container;
+    }
+};
+
 function PrepareDocumentForSendV2(doc, DocTypeErpNext)
 {
 	switch(DocTypeErpNext)
@@ -47,14 +83,17 @@ function SetupCustomButtons(doc, DocTypeErpNext)
             
             //console.log(doc.name);
             var docApi = await frappe.db.get_doc(DocTypeErpNext, doc.name);
-            
-            //Lograr que sea visible en mobile
-            $('.list-actions').parent().removeClass('hidden-md');
-            $('.list-actions').parent().removeClass('hidden-xs');
-            $('.list-actions').parent().parent().removeClass('hidden-xs');
-            //
 
-            var actionButton = $('.list-actions > .btn-action[data-name="' + doc.name + '"]');
+            //Lograr que sea visible en mobile - Compatible con v14 y v15
+            var listActionsContainer = ERPNEXT_EC_COMPAT.getListActionsContainer();
+            if (listActionsContainer.length > 0) {
+                listActionsContainer.parent().removeClass('hidden-md');
+                listActionsContainer.parent().removeClass('hidden-xs');
+                listActionsContainer.parent().parent().removeClass('hidden-xs');
+            }
+
+            // Obtener botón de acción compatible con v14 y v15
+            var actionButton = ERPNEXT_EC_COMPAT.getActionButton(doc.name);
 
             $(actionButton).removeClass('btn-default');
             $(actionButton).addClass('btn-warning');
@@ -171,9 +210,10 @@ function SetListSriButtons(DocTypeErpNext)
 		{
 			return __('Enviar al SRI')
 		},
-		action(doc) 
+		action(doc)
 		{
-			var actionButton = $('.list-actions > .btn-action[data-name="' + doc.name + '"]');
+			// Usar helper de compatibilidad v14/v15
+			var actionButton = ERPNEXT_EC_COMPAT.getActionButton(doc.name);
 			//console.log($(actionButton).attr('endRender'));
 
 			if ($(actionButton).attr('endRender') != 'true') {
@@ -182,7 +222,7 @@ function SetListSriButtons(DocTypeErpNext)
 					indicator: 'red'
 				}, 3);
 			}
-			
+
 			//Se omite la siguiente linea porque se redunda el llamado de la funcion
 			//PrepareDocumentForSend(doc);
 		}
