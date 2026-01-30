@@ -23,7 +23,12 @@ is_frappe_v15_or_above = frappe_version_int >= 15
 if is_frappe_v15_or_above:
     # Frappe v15+ usa sistema de bundles
     app_include_js = ["erpnext_ec.bundle.js"]
-    app_include_css = ["erpnext_ec.bundle.css"]
+    app_include_css = [
+        "erpnext_ec.bundle.css",
+        # CSS de librerías externas (no se pueden importar en bundle, se cargan por separado)
+        "/assets/erpnext_ec/js/libs/jsonTree/jsonTree.css",
+        "/assets/erpnext_ec/js/libs/monthpicker/jquery-ui.css",
+    ]
 else:
     # Frappe v14 y anteriores usan rutas absolutas
     app_include_js = [

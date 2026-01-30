@@ -1,11 +1,7 @@
-/* erpnext_ec.bundle.css - Estilos consolidados para ERPNext v15+ */
+/* erpnext_ec.bundle.css - Estilos para ERPNext v15+ */
+/* Nota: Los estilos de librerías externas (jsonTree, monthpicker) se cargan por separado */
 
-/* Importar estilos de librerías externas */
-@import "../js/libs/jsonTree/jsonTree.css";
-@import "../js/libs/monthpicker/qunit.min.css";
-@import "../js/libs/monthpicker/jquery-ui.css";
-
-/* Estilos adicionales para SRI */
+/* Estilos para SRI */
 .warning-sri {
     padding: 10px;
     background-color: #fff3cd;
@@ -24,4 +20,17 @@
 
 .sri-status-rejected {
     color: #dc3545;
+}
+
+/* Estilos para botones SRI en navbar */
+.erpnext-ec-company-btn .ellipsis {
+    max-width: 100px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+/* Estilos para dropdown de acciones SRI */
+.dropdown-menu .dropdown-item i {
+    margin-right: 5px;
 }
